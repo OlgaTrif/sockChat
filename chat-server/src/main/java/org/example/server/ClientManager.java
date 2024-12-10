@@ -3,6 +3,7 @@ package org.example.server;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ClientManager implements Runnable{
@@ -44,14 +45,20 @@ public class ClientManager implements Runnable{
     }
 
     private void broadcastMessage(String message) {
-        for (ClientManager client : clients) {
-            if (!client.name.equals(name)) {
-                try {
-                    bufferedWriter.write(message);
-                    bufferedWriter.newLine();
-                    bufferedWriter.flush();
-                } catch (IOException e) {
-                    closeEverything(this.socket, bufferedWriter, bufferedReader);
+        String clientToSendMessage = findClientNameFromMessage(message);
+        //отправляем конкретному человеку
+        if (clientToSendMessage.isEmpty()) {
+            //отправляем всем кроме себя
+            for (ClientManager client : clients) {
+                if (!client.name.equals(name)) {
+                    send(message, client);
+                }
+            }
+        } else {
+            for (ClientManager client : clients) {
+                //отправляем только ему
+                if (client.name.equals(clientToSendMessage)) {
+                    send(message.replace("@", ""), client);
                 }
             }
         }
@@ -78,5 +85,27 @@ public class ClientManager implements Runnable{
         clients.remove(this);
         System.out.println(name + " покинул чат.");
         broadcastMessage("Server: " + name +  " покинул чат.");
+    }
+
+    private String findClientNameFromMessage(String message){
+        String clientName;
+        String[] str = message.split(" ");
+        clientName = str[1];
+        if (clientName.startsWith("@")) {
+            clientName = clientName.substring(1);
+        } else {
+            clientName = "";
+        }
+        return clientName;
+    }
+
+    private void send(String message, ClientManager client){
+        try {
+            client.bufferedWriter.write(message);
+            client.bufferedWriter.newLine();
+            client.bufferedWriter.flush();
+        } catch (IOException e) {
+            closeEverything(this.socket, bufferedWriter, bufferedReader);
+        }
     }
 }
