@@ -38,7 +38,6 @@ public class Client {
                         System.out.println(message);
                     } catch (IOException e){
                         closeEverything(socket, bufferedWriter, bufferedReader);
-                        e.printStackTrace();
                     }
                 }
             }
@@ -63,7 +62,6 @@ public class Client {
             }
         } catch (IOException e) {
             closeEverything(socket, bufferedWriter, bufferedReader);
-            e.printStackTrace();
         }
     }
 
