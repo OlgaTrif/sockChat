@@ -9,7 +9,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>chat-cliebt</artifactId>
+    <artifactId>chat-client</artifactId>
 
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
