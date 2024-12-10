@@ -46,7 +46,6 @@ public class ClientManager implements Runnable{
 
     private void broadcastMessage(String message) {
         String clientToSendMessage = findClientNameFromMessage(message);
-        //отправляем конкретному человеку
         if (clientToSendMessage.isEmpty()) {
             //отправляем всем кроме себя
             for (ClientManager client : clients) {
@@ -58,7 +57,7 @@ public class ClientManager implements Runnable{
             for (ClientManager client : clients) {
                 //отправляем только ему
                 if (client.name.equals(clientToSendMessage)) {
-                    send(message.replace("@", ""), client);
+                    send(message.replace("@" + clientToSendMessage + " ", ""), client);
                 }
             }
         }
